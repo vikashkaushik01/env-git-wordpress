@@ -1,0 +1,24 @@
+---
+apiVersion: "networking.k8s.io/v1"
+kind: "Ingress"
+metadata:
+  namespace: "wordpress"
+  annotations: {}
+  name: "wordpress-ingress"
+  labels:
+    app.kubernetes.io/name: "wordpress"
+spec:
+  rules:
+  - host: "wordpress.example.com"
+    http:
+      paths:
+      - path: "/"
+        pathType: "Prefix"
+        backend:
+          service:
+            name: "wordpress"
+            port:
+              number: 80
+  tls:
+  - hosts:
+    - "wordpress.example.com"

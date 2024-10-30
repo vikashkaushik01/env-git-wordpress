@@ -1,0 +1,57 @@
+---
+kind: "Deployment"
+apiVersion: "apps/v1"
+metadata:
+  annotations: {}
+  name: "wordpress"
+  labels:
+    app: "wordpress"
+    app.kubernetes.io/name: "wordpress"
+    app.kubernetes.io/component: "deployment.wordpress"
+spec:
+  replicas: 1
+  revisionHistoryLimit: 5
+  selector:
+    matchLabels:
+      app: "wordpress"
+      tier: "frontend"
+    matchExpressions: []
+  strategy:
+    type: "Recreate"
+  template:
+    metadata:
+      annotations: {}
+      labels:
+        app: "wordpress"
+        tier: "frontend"
+        app.kubernetes.io/name: "wordpress"
+        app.kubernetes.io/component: "deployment.wordpress"
+    spec:
+      terminationGracePeriodSeconds: 30
+      nodeSelector: {}
+      volumes:
+      - name: "wordpress-persistent-storage"
+        persistentVolumeClaim:
+          claimName: "wp-pv-claim"
+      containers:
+      - name: "wordpress"
+        image: "wordpress:6.2.1-apache"
+        command: []
+        args: []
+        ports:
+        - name: "wordpress"
+          containerPort: 80
+          protocol: "TCP"
+        env:
+        - name: "WORDPRESS_DB_HOST"
+          value: "wordpress-mysql"
+        - name: "WORDPRESS_DB_PASSWORD"
+          valueFrom:
+            secretKeyRef:
+              name: "mysql-pass"
+              key: "password"
+        - name: "WORDPRESS_DB_USER"
+          value: "wordpress"
+        volumeMounts:
+        - name: "wordpress-persistent-storage"
+          mountPath: "/var/www/html"
