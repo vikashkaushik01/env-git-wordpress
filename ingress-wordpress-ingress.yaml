@@ -21,4 +21,4 @@ spec:
               number: 80
   tls:
   - hosts:
-    - "wordpress3.example.com"
+    - "wordpress.example.com"
